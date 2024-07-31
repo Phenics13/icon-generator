@@ -1,0 +1,44 @@
+.splash-images {
+  position: relative;
+
+  img {
+    position: absolute;
+    transform: scale(0.8);
+  }
+
+  img:nth-child(1) {
+    top: 10rem;
+    left: 8rem;
+    z-index: 5;
+  }
+
+  img:nth-child(2) {
+    top: 15rem;
+    left: 0rem;
+    z-index: 4;
+  }
+
+  img:nth-child(3) {
+    top: 19rem;
+    left: 9rem;
+    z-index: 4;
+  }
+
+  img:nth-child(4) {
+    top: 11rem;
+    left: 17rem;
+    z-index: 3;
+  }
+
+  img:nth-child(5) {
+    top: 2rem;
+    left: -1rem;
+    z-index: 2;
+  }
+
+  img:nth-child(6) {
+    top: -1rem;
+    left: 12rem;
+    z-index: 1;
+  }
+}

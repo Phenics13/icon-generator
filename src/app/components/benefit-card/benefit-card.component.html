@@ -1,0 +1,16 @@
+<p-card [style]="{ height: '100%' }">
+  <ng-template pTemplate="title">
+    <div class="flex align-items-center gap-1">
+      <img
+        src="{{ benefit.img }}"
+        alt="{{ benefit.title + ' icon' }}"
+        class="w-4rem h-4rem"
+        style="transform: scale(0.8)"
+      />
+      <p class="text-lg">{{ benefit.title }}</p>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p class="text-base">{{ benefit.description }}</p>
+  </ng-template>
+</p-card>

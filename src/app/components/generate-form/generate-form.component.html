@@ -1,0 +1,105 @@
+<h1 class="mt-5">Generate Icons</h1>
+<form
+  class="flex flex-column gap-2 w-30rem mb-7"
+  style="max-width: 30rem"
+  [formGroup]="generateIconForm"
+  (ngSubmit)="generateIcon()"
+>
+  <p class="h5">1. Come up with a description for your icon</p>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <input
+      matInput
+      formControlName="description"
+      placeholder="A beautiful white duck"
+      required
+    />
+    @if (generateIconForm.get('description')?.hasError('required')) {
+    <mat-error> Description is required. </mat-error>
+    }
+  </mat-form-field>
+  <p class="h5">2. Choose the main color of the icon</p>
+  <mat-tab-group class="tab-group">
+    <mat-tab label="Color">
+      @for (color of colors; track $index) {
+      <app-colorbox
+        [color]="color"
+        [selected]="color.hex === generateIconForm.get('color')?.value"
+        (click)="onColorBoxClick(color)"
+      ></app-colorbox>
+      }
+      <input type="hidden" formControlName="color" />
+    </mat-tab>
+    <mat-tab label="Picker">
+      <div class="flex gap-4 mt-2">
+        <div class="col">
+          <p-colorPicker
+            formControlName="color"
+            [inline]="true"
+          ></p-colorPicker>
+        </div>
+        <div class="col">
+          <app-colorbox
+            [color]="{
+              name: 'custom',
+              hex: this.generateIconForm.get('color')?.value ?? ''
+            }"
+          ></app-colorbox>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Hex">
+      <mat-form-field class="mt-2">
+        <input
+          matInput
+          formControlName="color"
+          placeholder="#000000"
+          required
+        />
+      </mat-form-field>
+    </mat-tab>
+  </mat-tab-group>
+  <p class="h5">3. Select the style of the icon</p>
+  <mat-form-field appearance="outline">
+    <mat-label>Style</mat-label>
+    <mat-select formControlName="style" required>
+      @for (style of styles; track $index) {
+      <mat-option [value]="style">{{ style }}</mat-option>
+      }
+    </mat-select>
+    @if (generateIconForm.get('style')?.hasError('required')) {
+    <mat-error> Style is required. </mat-error>
+    }
+  </mat-form-field>
+  @if (generateIconForm.get('color')?.hasError('required')) {
+  <mat-error> Color is required. </mat-error>
+  } @if (generateIconForm.get('color')?.hasError('invalidHexColor')) {
+  <mat-error> Invalid hex color. Use format #123ABC or #123. </mat-error>
+  }
+  <p class="h5">4. Set the quantity</p>
+  <mat-form-field appearance="outline">
+    <mat-label>Quantity</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="quantity"
+      [defaultValue]="1"
+      [min]="1"
+    />
+    @if (generateIconForm.get('quantity')?.hasError('required')) {
+    <mat-error> Quantity is required. </mat-error>
+    } @if (generateIconForm.get('quantity')?.hasError('min')) {
+    <mat-error> Quantity cannot be less than 1. </mat-error>
+    } @if (generateIconForm.get('quantity')?.hasError('max')) {
+    <mat-error> Quantity cannot be more than 10. </mat-error>
+    }
+  </mat-form-field>
+  <p-button
+    label="Generate"
+    icon="pi pi-sparkles"
+    iconPos="right"
+    class="m-auto"
+    type="submit"
+    [loading]="imagesGenerating$ | async"
+  />
+</form>

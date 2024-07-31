@@ -1,0 +1,100 @@
+<div class="w-11 m-auto">
+  <div class="flex justify-content-between gap-3" style="min-height: 30rem">
+    <div class="splash-title flex-1 m-auto">
+      <h1 class="text-3xl">
+        <span class="gradient-text">Welcome to Icon Generator </span>⭐️
+      </h1>
+      <p class="text-base">Generate favorite icons in seconds</p>
+      <a routerLink="/generate" class="p-button font-bold">Generate</a>
+    </div>
+    <div class="splash-images flex-1">
+      <img
+        src="assets/img/splash/image_1.png"
+        alt="Icon design 1"
+        class="img-fluid"
+      />
+      <img
+        src="assets/img/splash/image_2.png"
+        alt="Icon design 2"
+        class="img-fluid"
+      />
+      <img
+        src="assets/img/splash/image_3.png"
+        alt="Icon design 3"
+        class="img-fluid"
+      />
+      <img
+        src="assets/img/splash/image_4.png"
+        alt="Icon design 4"
+        class="img-fluid"
+      />
+      <img
+        src="assets/img/splash/image_5.png"
+        alt="Icon design 5"
+        class="img-fluid"
+      />
+      <img
+        src="assets/img/splash/image_6.png"
+        alt="Icon design 6"
+        class="img-fluid"
+      />
+    </div>
+  </div>
+  <div class="text-center flex flex-column">
+    <p-button label="Get Started" (onClick)="scroll(benefitsSection)" />
+    <i class="pi pi-angle-down"></i>
+  </div>
+  <div class="my-7 text-center">
+    <p class="text-base">
+      Join the <span class="gradient-text">456</span> users creating
+      <span class="gradient-text">1245</span> icons!
+    </p>
+  </div>
+  <section #benefitsSection>
+    <h2 class="text-2xl text-center">
+      <span class="gradient-text">Our Benefits</span>
+    </h2>
+    <div class="grid">
+      @for (benefit of benefits; track $index) {
+      <div class="col-3 p-2">
+        <app-benefit-card [benefit]="benefit"></app-benefit-card>
+      </div>
+      }
+    </div>
+  </section>
+  <section class="my-7">
+    <h2 class="text-2xl text-center">
+      <span class="gradient-text">Reviews</span>
+    </h2>
+    <p-carousel
+      [value]="reviews"
+      [numVisible]="3"
+      [numScroll]="1"
+      autoPlayInterval="3000"
+    >
+      <ng-template let-review pTemplate="item">
+        <div class="border-1 surface-border border-round m-2 p-3 h-24rem">
+          <div class="flex align-items-center">
+            <div class="col" style="max-width: fit-content">
+              <img
+                src="{{ review.img }}"
+                [alt]="review.name"
+                class="w-4rem h-4rem border-circle mt-2"
+                style="object-fit: cover"
+              />
+            </div>
+            <div class="col">
+              <p class="text-2xl my-2">{{ review.name }}</p>
+              <p class="text-xl my-1 gradient-text">{{ review.title }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <p>{{ review.description }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-carousel>
+  </section>
+</div>

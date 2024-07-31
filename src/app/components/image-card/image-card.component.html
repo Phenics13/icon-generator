@@ -1,0 +1,28 @@
+<p-card>
+  <ng-template pTemplate="header">
+    <img alt="{{ image.description }}" src="{{ image.url }}" />
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="flex justify-content-between align-items-center">
+      <p>
+        {{ image.description }}
+      </p>
+      <div
+        class="w-2rem h-2rem border-round border-2 border-200"
+        [style]="{ backgroundColor: image.color }"
+      ></div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex gap-3 mt-1">
+      <p-button
+        label="Save"
+        class="w-full"
+        styleClass="w-full"
+        icon="pi pi-download"
+        iconPos="right"
+        (onClick)="downloadImage(image.url)"
+      />
+    </div>
+  </ng-template>
+</p-card>

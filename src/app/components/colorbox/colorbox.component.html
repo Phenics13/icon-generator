@@ -1,0 +1,14 @@
+<div
+  class="color-box-outer"
+  [style]="{
+  borderStyle: color.hex ? 'solid' : 'dashed',
+  borderColor: selected ? 'blue' : 'lightgray',
+}"
+>
+  <div
+    class="color-box-inner"
+    [style]="{
+      backgroundColor: color.hex ? color.hex : 'white',
+    }"
+  ></div>
+</div>

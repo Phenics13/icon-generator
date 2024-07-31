@@ -1,0 +1,17 @@
+@if (userImagesLoading$ | async) {
+<div class="text-center">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+} @else { @if (userImages$ | async; as userImages) {
+<div class="grid p-5">
+  @for (image of userImages; track $index) {
+  <div class="col-3">
+    <app-image-card [image]="image"></app-image-card>
+  </div>
+  }
+</div>
+} @else {
+<div class="text-center">
+  <p>No images found. <span class="gradient-text">Generate some!</span></p>
+</div>
+} }

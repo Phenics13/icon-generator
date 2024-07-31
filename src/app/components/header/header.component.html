@@ -1,0 +1,46 @@
+<p-toolbar>
+  <div class="p-toolbar-group-start">
+    <div class="flex align-items-center gap-3">
+      <img
+        src="assets/img/Logo_placeholder.png"
+        alt="logo"
+        style="height: 3rem; cursor: pointer"
+        (click)="goToPage('/')"
+      />
+      <span class="text-2xl">Icon Generator</span>
+      <p-button
+        label="Generate"
+        routerLink="/generate"
+        routerLinkActive="active"
+        #activeGenerate="routerLinkActive"
+        [outlined]="!activeGenerate.isActive"
+        (onClick)="goToPage('generate')"
+      />
+    </div>
+  </div>
+  <div class="p-toolbar-group-center"></div>
+  <div class="p-toolbar-group-end">
+    <div class="flex align-items-center gap-3">
+      @if (userId$ | async) {
+      <p-button
+        icon="pi pi-heart"
+        routerLink="/icons"
+        routerLinkActive="active"
+        #activeIcons="routerLinkActive"
+        [outlined]="!activeIcons.isActive"
+        (onClick)="goToPage('icons')"
+      />
+      <p-button
+        icon="pi pi-user"
+        routerLink="/profile"
+        routerLinkActive="active"
+        #activeProfile="routerLinkActive"
+        [outlined]="!activeProfile.isActive"
+        (onClick)="goToPage('profile')"
+      />
+      } @else {
+      <p-button label="Log In" (onClick)="loginClick()" />
+      }
+    </div>
+  </div>
+</p-toolbar>
