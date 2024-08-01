@@ -12,7 +12,8 @@ npm-debug.log
 yarn-error.log
 
 # Angular
-/src/environments
+.env
+.netlify
 
 # IDEs and editors
 .idea/
