@@ -54,7 +54,7 @@
               <mat-error>Amount should be at least 1</mat-error>
               }
             </mat-form-field>
-            <p-button label="Top Up" type="submit" />
+            <p-button label="Top Up" type="submit" [loading]="prePaying()" />
           </form>
           <p-button
             label="Log Out"
@@ -65,12 +65,17 @@
       </ng-template>
     </p-card>
   </div>
+  } @else { @if (userLoading$ | async) {
+  <div class="flex justify-content-center">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
   } @else {
   <h1 class="text-3xl text-center">There is some problem! Refresh page.</h1>
-  }
+  } }
 </div>
 
 <app-payment-form
   [(visible)]="isVisibleTopUp"
   [clientSecret]="clientSecret"
+  [amount]="paymentForm.get('amount')?.value"
 ></app-payment-form>

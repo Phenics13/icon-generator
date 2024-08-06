@@ -87,7 +87,6 @@ export class GenerateFormComponent implements OnDestroy {
       console.log(this.generateIconForm);
       return;
     }
-    console.log(this.generateIconForm.value.quantity);
     const quantity = this.generateIconForm.value.quantity;
     if (this.userCredits < quantity) {
       this.userService.openNotEnoughCreditsDialog();

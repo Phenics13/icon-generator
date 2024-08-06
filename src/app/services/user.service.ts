@@ -54,9 +54,26 @@ export class UserService {
   updateUserCredits(user: UserAccount): Observable<void | null> {
     return this.getUserFromFirestore(user).pipe(
       switchMap((userAccount) => {
-        const newUserAccount = { ...userAccount, credits: userAccount.credits - 1 };
+        const newUserAccount = {
+          ...userAccount,
+          credits: userAccount.credits - 1,
+        };
         const usersCollectionRef = collection(this.firestore, `users`);
-        const userDocRef = doc(usersCollectionRef, userAccount.uid); 
+        const userDocRef = doc(usersCollectionRef, userAccount.uid);
+        return from(setDoc(userDocRef, newUserAccount));
+      })
+    );
+  }
+
+  topUpUserCredits(user: UserAccount, credits: number): Observable<void> {
+    return this.getUserFromFirestore(user).pipe(
+      switchMap((userAccount) => {
+        const newUserAccount = {
+          ...userAccount,
+          credits,
+        };
+        const usersCollectionRef = collection(this.firestore, `users`);
+        const userDocRef = doc(usersCollectionRef, userAccount.uid);
         return from(setDoc(userDocRef, newUserAccount));
       })
     );

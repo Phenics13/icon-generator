@@ -28,7 +28,7 @@ import { FooterComponent } from './components/footer/footer.component';
 })
 export class AppComponent implements OnInit {
   title = 'icon-generator';
-  user$ = this.store.pipe(select(selectUser));
+  user$ = this.store.select(selectUser);
 
   constructor(private store: Store<State>) {}
 

@@ -2,9 +2,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   signal,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
@@ -23,12 +26,34 @@ import {
 } from 'ngx-stripe';
 import { environment } from '../../../environments/environment.development';
 import {
+  PaymentIntentResult,
   StripeElementsOptions,
   StripePaymentElementOptions,
 } from '@stripe/stripe-js';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { PaymentService } from '../../services/payment.service';
+import {
+  filter,
+  map,
+  Observable,
+  Subject,
+  Subscription,
+  switchMap,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs';
+import { selectUser } from '../../reducers/user/user.selectors';
+import { Store } from '@ngrx/store';
+import { State } from '../../reducers';
+import {
+  userTopUpCredits,
+  userTopUpCreditsFailure,
+  userTopUpCreditsSuccess,
+  userUpdateCredits,
+} from '../../reducers/user/user.actions';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-payment-form',
@@ -43,55 +68,81 @@ import { PaymentService } from '../../services/payment.service';
     ReactiveFormsModule,
     MatDividerModule,
     MatInputModule,
+    CommonModule,
   ],
   templateUrl: './payment-form.component.html',
   styleUrl: './payment-form.component.scss',
 })
-export class PaymentFormComponent implements OnInit {
+export class PaymentFormComponent implements OnChanges, OnDestroy {
   @Input() visible: boolean = false;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() clientSecret: string | undefined = undefined;
+  @Input() amount: number = 0;
 
   @ViewChild(StripePaymentElementComponent)
   paymentElement!: StripePaymentElementComponent;
 
-  constructor(private paymentService: PaymentService) {}
+  readonly stripe = injectStripe(environment.stripe.public);
+  stripeSub: Subscription | undefined;
 
-  ngOnInit(): void {
-    // [TODO] make request to a netlify function
+  elementsOptions: StripeElementsOptions = this.paymentService.elementsOptions;
+  paymentElementsOptions = this.paymentService.paymentElementsOptions;
+  paying = signal(false);
+
+  user$ = this.store.select(selectUser);
+
+  constructor(
+    private paymentService: PaymentService,
+    private store: Store<State>
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
     this.elementsOptions.clientSecret = this.clientSecret;
   }
 
-  readonly stripe = injectStripe(environment.stripe.public);
-  paying = signal(false);
-
-  checkoutForm = this.paymentService.createPaymentForm();
-
   pay() {
-    if (this.paying() || this.checkoutForm.invalid) return;
+    if (this.paying()) return;
     this.paying.set(true);
 
-    this.stripe
-      .confirmPayment({
-        elements: this.paymentElement.elements,
-        redirect: 'if_required',
-      })
-      .subscribe((result) => {
-        this.paying.set(false);
-        console.log('Result', result);
+    if (this.stripeSub) this.stripeSub.unsubscribe();
+    this.store.dispatch(userTopUpCredits());
+
+    this.stripeSub = this.user$
+      .pipe(
+        filter((user) => !!user),
+        take(1),
+        switchMap((user) => {
+          console.log('User found', user);
+          return this.stripe
+            .confirmPayment({
+              elements: this.paymentElement.elements,
+              redirect: 'if_required',
+            })
+            .pipe(map((result: PaymentIntentResult) => ({ result, user })));
+        })
+      )
+      .subscribe(({ result, user }) => {
+        console.log('Payment result', result);
         if (result.error) {
-          // Show error to your customer (e.g., insufficient funds)
-          alert({ success: false, error: result.error.message });
+          this.store.dispatch(userTopUpCreditsFailure({ error: result.error }));
+          this.paymentService.openStripeErrorDialog(result.error);
         } else {
-          // The payment has been processed!
           if (result.paymentIntent.status === 'succeeded') {
-            // Show a success message to your customer
-            alert({ success: true });
+            const newCredits =
+              user!.credits + result.paymentIntent.amount / 100;
+
+            this.store.dispatch(userTopUpCreditsSuccess());
+            this.store.dispatch(
+              userUpdateCredits({ user: user!, credits: newCredits })
+            );
           }
         }
+        this.paying.set(false);
+        this.visibleChange.emit(false);
       });
   }
 
-  elementsOptions = this.paymentService.elementsOptions;
-  paymentElementsOptions = this.paymentService.paymentElementsOptions;
+  ngOnDestroy(): void {
+    this.stripeSub?.unsubscribe();
+  }
 }

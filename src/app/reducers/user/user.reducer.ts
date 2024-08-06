@@ -2,15 +2,18 @@ import { createReducer, on } from '@ngrx/store';
 import { UserState } from '../../models/user.model';
 import {
   userAuthenticated,
+  userCheckAuth,
   userLogInGoogle,
   userLogInGoogleFailure,
-  userLogInGoogleSuccess,
   userLogOut,
   userLogOutFailure,
   userLogOutSuccess,
+  userTopUpCreditsFailure,
+  userTopUpCreditsSuccess,
+  userUpdateCredits,
+  userUpdateCreditsFailure,
+  userUpdateCreditsSuccess,
 } from './user.actions';
-import { addImageToUserSuccess } from '../images/images.actions';
-import { state } from '@angular/animations';
 
 export const initialState: UserState = {
   user: null,
@@ -43,8 +46,28 @@ export const userReducer = createReducer(
     error,
     loading: false,
   })),
+  on(userCheckAuth, (state) => ({
+    ...state,
+    loading: true,
+  })),
   on(userAuthenticated, (state, { user }) => ({
     ...state,
     user,
+    loading: false,
+  })),
+  on(userUpdateCreditsSuccess, (state, { credits }) => ({
+    ...state,
+    user: {
+      ...state.user!,
+      credits,
+    },
+  })),
+  on(userUpdateCreditsFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
+  on(userTopUpCreditsFailure, (state, { error }) => ({
+    ...state,
+    error,
   }))
 );

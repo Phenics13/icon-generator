@@ -12,6 +12,7 @@ import { userReducer } from './user/user.reducer';
 import { ImagesState } from '../models/image.model';
 import { imagesReducer } from './images/images.reducer';
 import { ImagesEffects } from './images/images.effects';
+import { PaymentState } from '../models/payment.model';
 
 export interface State {
   user: UserState;

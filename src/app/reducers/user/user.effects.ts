@@ -14,14 +14,23 @@ import {
   userLogOutFailure,
   userLogOutSuccess,
   userNotAuthenticated,
+  userTopUpCreditsSuccess,
+  userUpdateCredits,
+  userUpdateCreditsFailure,
+  userUpdateCreditsSuccess,
 } from './user.actions';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { UserAccount } from '../../models/user.model';
 import { addImageToUserSuccess } from '../images/images.actions';
+import { PaymentService } from '../../services/payment.service';
 
 @Injectable()
 export class UserEffects {
-  constructor(private actions$: Actions, private userService: UserService) {}
+  constructor(
+    private actions$: Actions,
+    private userService: UserService,
+    private paymentService: PaymentService
+  ) {}
 
   logInUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -53,7 +62,7 @@ export class UserEffects {
     )
   );
 
-  updateCredits$ = createEffect(() =>
+  updateImageCredits$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addImageToUserSuccess),
       switchMap(({ user }) =>
@@ -63,6 +72,20 @@ export class UserEffects {
             return userAuthenticated({ user: updatedUser });
           }),
           catchError((error) => of(addUserToFirestoreFailure({ error })))
+        )
+      )
+    )
+  );
+
+  updateUserCredits$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(userUpdateCredits),
+      switchMap(({ user, credits }) =>
+        this.userService.topUpUserCredits(user, credits).pipe(
+          map(() => {
+            return userUpdateCreditsSuccess({ credits });
+          }),
+          catchError((error) => of(userUpdateCreditsFailure({ error })))
         )
       )
     )
