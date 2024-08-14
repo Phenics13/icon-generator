@@ -30,8 +30,11 @@ Project:
 - store generated icons and their inputs in one place
 
 **Creating icon without icon generator**
+
 ![without app](./readme_assets/without.png)
+
 **Creating icon with icon generator**
+
 ![with app](./readme_assets//with.png)
 
 ## Sequence diagrams of creating an icon
