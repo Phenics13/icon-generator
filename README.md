@@ -1,27 +1,76 @@
-# IconGenerator
+# IconGenerator ⭐️
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.3.
+Technologies:
 
-## Development server
+- Stack: Angular, NgRx, Firebase
+- UI Library: Angular Material, PrimeNG
+- Services: Stripe, Cloudinary, DALL-E
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Project Structure ⚙️
 
-## Code scaffolding
+```mermaid
+flowchart
+angular([Angular]) <--> |manage state|state[(NgRx)]
+state <--> |host icons|cloudinary((Cloudinary))
+state <--> |storage|firebase[(Firebase)]
+state <--> |AI model|dalle((DALL-E))
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Additional Libraries
 
-## Build
+- Ngx Stipe (simplify Stripe integration)
+- Ngx-env/builder (use .env variables)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Main idea of the project
 
-## Running unit tests
+Project:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- simplify the steps needed to generate icon
+- automate icon generation process
+- store generated icons and their inputs in one place
 
-## Running end-to-end tests
+**Creating icon without icon generator**
+![without app](./readme_assets/without.png)
+**Creating icon with icon generator**
+![with app](./readme_assets//with.png)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Sequence diagrams of creating an icon
 
-## Further help
+![sequence diagram](./readme_assets/with_sequence.png)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Conclusion
+
+Completed tasks:
+
+- [Known] Integrate DALL-E API
+- [Known] Implement website UI using Angular
+  - [Known] Use Firebase as storage
+- [Known] Use Cloudinary as image hosting service
+- [Known] Integrate Stripe payment system
+  - [Known] Implement authentication via Google
+- [New] Implement prompt engineering logic for icon generation
+- [New] Implement parameters needed for icon generation
+
+Benefits of the project:
+
+- Pay as you generate
+- Icon generation automation
+- Saved icons and their parameters in one place
+- Converted to .ico format
+
+## How to run
+
+Locally:
+
+```
+ng serve OR npm start
+```
+
+Docker:
+
+```
+docker build -t icon-generator .
+docker run -d -p 8080:80 --name icon-generator-container icon-generator
+```
+
+_Stripe works only with netlify functions_
